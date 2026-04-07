@@ -1,25 +1,40 @@
-import { MessageSquare, Sparkles, CheckSquare } from "lucide-react";
+import Link from "next/link";
+import { MessageSquare, Map, BookOpen, ListChecks, Sparkles } from "lucide-react";
 import FadeIn from "@/components/ui/FadeIn";
 
 const STEPS = [
   {
     icon: MessageSquare,
-    title: "Format wählen",
-    description: "Wähle dein Reiseformat — Work & Travel, Backpacking, Sabbatical oder mehr.",
+    title: "Fragen beantworten",
+    description: "Klicke dich durch kurze Fragen zu Budget, Dauer, Interessen und deiner Komfortzone.",
     color: "bg-teal-50 border-teal-100",
     iconColor: "text-teal-700",
   },
   {
     icon: Sparkles,
-    title: "Fragebogen ausfüllen",
-    description: "Klicke dich durch 10 kurze Fragen zu Budget, Dauer, Interessen und Komfortzone.",
+    title: "Individuellen Plan erhalten",
+    description: "Unsere KI-Beraterin Martha erstellt dir einen persönlichen Gap-Year-Plan.",
     color: "bg-amber-50 border-amber-100",
     iconColor: "text-amber-600",
   },
   {
-    icon: CheckSquare,
-    title: "Deinen Plan erhalten",
-    description: "Du bekommst eine persönliche Empfehlung mit Checkliste und hilfreichen Links.",
+    icon: Map,
+    title: "Möglichkeiten anschauen",
+    description: "Martha schlägt dir drei verschiedene Gap-Year-Optionen vor — von Au pair bis Work & Travel.",
+    color: "bg-teal-50 border-teal-100",
+    iconColor: "text-teal-700",
+  },
+  {
+    icon: BookOpen,
+    title: "Informieren",
+    description: "Zu jeder Empfehlung gibt es weiterführende Links, Landesinfos und hilfreiche Ressourcen.",
+    color: "bg-amber-50 border-amber-100",
+    iconColor: "text-amber-600",
+  },
+  {
+    icon: ListChecks,
+    title: "Checkliste beachten",
+    description: "Eine persönliche Planungs- und Packliste hilft dir, nichts Wichtiges zu vergessen.",
     color: "bg-stone-100 border-stone-200",
     iconColor: "text-stone-600",
   },
@@ -30,20 +45,20 @@ export default function HowItWorks() {
     <section id="how-it-works" className="py-24 px-5 sm:px-8 bg-white">
       <div className="max-w-6xl mx-auto">
         <FadeIn className="text-center mb-16">
-          <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-3">So einfach geht's</p>
+          <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-3">So funktioniert es</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-stone-900 mb-4 tracking-tight">
-            In 3 Schritten zum Plan
+            In 5 Schritten zum Gap Year
           </h2>
           <p className="text-stone-500 text-lg max-w-xl mx-auto">
-            Keine langen Formulare, kein Wartezeit — in wenigen Minuten fertig.
+            Martha begleitet dich vom ersten Gedanken bis zur fertigen Packliste.
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
-              <FadeIn key={i} delay={(i + 1) as 1 | 2 | 3}>
+              <FadeIn key={i} delay={Math.min(i + 1, 4) as 0 | 1 | 2 | 3 | 4}>
                 <div className="flex flex-col items-center text-center">
                   <div className={`relative w-20 h-20 border-2 rounded-2xl flex items-center justify-center mb-5 ${step.color}`}>
                     <Icon className={`w-8 h-8 ${step.iconColor}`} />
@@ -61,12 +76,12 @@ export default function HowItWorks() {
 
         {/* Bottom CTA */}
         <FadeIn delay={4} className="text-center mt-14">
-          <a
-            href="#reiseformate"
-            className="inline-flex items-center gap-2 bg-teal-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-teal-800 transition-all hover:shadow-lg hover:-translate-y-0.5"
+          <Link
+            href="/advisor"
+            className="inline-flex items-center gap-2 bg-cyan-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-cyan-700 transition-all hover:shadow-lg hover:-translate-y-0.5"
           >
-            Jetzt Reise finden
-          </a>
+            Selbsttest starten
+          </Link>
         </FadeIn>
       </div>
     </section>

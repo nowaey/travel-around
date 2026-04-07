@@ -8,13 +8,17 @@ export const runtime = "nodejs";
 const RECOMMENDATION_START = "<<<RECOMMENDATION_START>>>";
 const RECOMMENDATION_END = "<<<RECOMMENDATION_END>>>";
 
-function parseRecommendation(text: string): TravelRecommendation | null {
+function parseRecommendations(text: string): TravelRecommendation[] | null {
   const startIdx = text.indexOf(RECOMMENDATION_START);
   const endIdx = text.indexOf(RECOMMENDATION_END);
   if (startIdx === -1 || endIdx === -1) return null;
   const jsonStr = text.slice(startIdx + RECOMMENDATION_START.length, endIdx).trim();
   try {
-    return JSON.parse(jsonStr) as TravelRecommendation;
+    const parsed = JSON.parse(jsonStr);
+    if (Array.isArray(parsed.recommendations)) {
+      return parsed.recommendations as TravelRecommendation[];
+    }
+    return null;
   } catch {
     return null;
   }
@@ -34,16 +38,16 @@ function stripRecommendationBlock(text: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body: RecommendRequest = await request.json();
-    const { answers, format } = body;
+    const { answers } = body;
 
-    if (!answers || !format) {
-      return new Response(JSON.stringify({ error: "Missing answers or format" }), {
+    if (!answers) {
+      return new Response(JSON.stringify({ error: "Missing answers" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    const userMessage = buildQuestionnairePrompt(answers, format);
+    const userMessage = buildQuestionnairePrompt(answers);
     const client = getGroqClient();
     const encoder = new TextEncoder();
     let fullText = "";
@@ -53,7 +57,7 @@ export async function POST(request: NextRequest) {
         try {
           const groqStream = await client.chat.completions.create({
             model: "llama-3.3-70b-versatile",
-            max_tokens: 1800,
+            max_tokens: 3500,
             stream: true,
             messages: [
               { role: "system", content: SYSTEM_PROMPT },
@@ -70,14 +74,14 @@ export async function POST(request: NextRequest) {
             );
           }
 
-          const recommendation = parseRecommendation(fullText);
-          if (recommendation) {
+          const recommendations = parseRecommendations(fullText);
+          if (recommendations) {
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({
                   type: "done",
                   isComplete: true,
-                  recommendation,
+                  recommendations,
                   closingText: stripRecommendationBlock(fullText),
                 })}\n\n`
               )

@@ -50,12 +50,16 @@ export const defaultAnswers: QuestionnaireAnswers = {
 // ── Results ──────────────────────────────────────────────────────────────────
 
 export interface TravelRecommendation {
+  travelType: string;          // z.B. "Au pair", "Work & Travel"
+  formatExplanation: string;   // 2 Sätze: Was ist dieser Reisetyp?
   destination: string;
   country: string;
+  imageKeyword: string;        // z.B. "tokyo japan skyline night" für Unsplash-Suche
   tagline: string;
   explanation: string;
   checklist: ChecklistItem[];
   resources: ResourceLink[];
+  packingList?: string[];      // kopierbare Packliste
   estimatedBudget?: string;
   bestTimeToVisit?: string;
 }
@@ -77,5 +81,4 @@ export interface ResourceLink {
 
 export interface RecommendRequest {
   answers: QuestionnaireAnswers;
-  format: TravelFormat;
 }

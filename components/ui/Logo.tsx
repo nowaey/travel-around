@@ -1,73 +1,100 @@
 import { clsx } from "clsx";
 
 interface LogoProps {
-  variant?: "light" | "dark"; // light = dark text on white, dark = white text on photo
+  variant?: "light" | "dark";
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-export default function Logo({ variant = "light", size = "md", className }: LogoProps) {
-  const sizes = {
-    sm: { icon: 28, font: "text-sm", gap: "gap-2" },
-    md: { icon: 34, font: "text-base", gap: "gap-2.5" },
-    lg: { icon: 44, font: "text-xl", gap: "gap-3" },
-  };
-  const s = sizes[size];
+const SIZES = {
+  sm: { icon: 30, text: "text-sm", gap: "gap-2" },
+  md: { icon: 38, text: "text-base", gap: "gap-2.5" },
+  lg: { icon: 50, text: "text-xl",  gap: "gap-3" },
+};
 
-  const isLight = variant === "light";
+export default function Logo({ variant = "light", size = "md", className }: LogoProps) {
+  const s = SIZES[size];
+  const dark = variant === "dark";
+
+  const travelColor = dark ? "#ffffff" : "#0c4a6e";
+  const aroundColor = dark ? "#ffffff" : "#0e7490";
 
   return (
     <div className={clsx("flex items-center", s.gap, className)}>
-      {/* Icon mark — globe with flight path */}
+      {/* ── Icon ─────────────────────────────────────────── */}
       <svg
         width={s.icon}
         height={s.icon}
-        viewBox="0 0 40 40"
+        viewBox="0 0 56 52"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Outer circle */}
-        <circle
-          cx="20"
-          cy="20"
-          r="18"
-          fill={isLight ? "#0f766e" : "rgba(255,255,255,0.15)"}
-          stroke={isLight ? "none" : "rgba(255,255,255,0.35)"}
-          strokeWidth="1"
-        />
+        <defs>
+          <linearGradient id="ta-g" x1="0" y1="0" x2="56" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stopColor="#38bdf8" />
+            <stop offset="50%"  stopColor="#0ea5e9" />
+            <stop offset="100%" stopColor="#0369a1" />
+          </linearGradient>
+        </defs>
 
-        {/* Globe latitude lines */}
-        <ellipse cx="20" cy="20" rx="18" ry="9" stroke={isLight ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.2)"} strokeWidth="1" fill="none" />
-
-        {/* Meridian line */}
-        <line x1="20" y1="2" x2="20" y2="38" stroke={isLight ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.2)"} strokeWidth="1" />
-
-        {/* Flight path arc */}
+        {/* ── Outer orbit arc (near-complete oval, arrow at end) ── */}
         <path
-          d="M 7 20 Q 14 10 28 15"
-          stroke={isLight ? "white" : "rgba(251,191,36,1)"}
-          strokeWidth="2"
+          d="M 28 4
+             C 42 4 52 13 52 26
+             C 52 39 42 48 28 48
+             C 14 48 4 39 4 26
+             C 4 13 12 5 24 4"
+          stroke="url(#ta-g)"
+          strokeWidth="3.2"
           strokeLinecap="round"
           fill="none"
         />
+        {/* Arrow at end of outer arc */}
+        <path d="M 24 4 L 29 1.5 M 24 4 L 28.5 8" stroke="url(#ta-g)" strokeWidth="2.8" strokeLinecap="round" />
 
-        {/* Plane */}
-        <g transform="translate(26, 13) rotate(25)">
-          <path
-            d="M0 0 L4 -1.5 L4 1.5 Z M-2 -1 L0 0 M-2 1 L0 0"
-            fill={isLight ? "white" : "#fbbf24"}
-            stroke="none"
-          />
-        </g>
+        {/* ── Inner arc (crossing, creates depth / second loop) ── */}
+        <path
+          d="M 36 8
+             C 44 12 48 19 46 28
+             C 44 37 36 44 26 44
+             C 18 44 12 38 12 30
+             C 12 22 18 16 28 14"
+          stroke="url(#ta-g)"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.75"
+        />
 
-        {/* Dot at destination */}
-        <circle cx="28" cy="15" r="2" fill={isLight ? "rgba(251,191,36,0.9)" : "#fbbf24"} />
+        {/* ── Location pin (left-center) ── */}
+        <circle cx="20" cy="24" r="4.2" fill="url(#ta-g)" />
+        {/* teardrop bottom */}
+        <path d="M 17.5 27.2 Q 20 34 22.5 27.2" fill="url(#ta-g)" />
+
+        {/* ── Mountain peaks (right-center) ── */}
+        <path
+          d="M 33 38 L 39.5 22 L 46 38"
+          stroke="url(#ta-g)"
+          strokeWidth="2.6"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          fill="none"
+        />
+        <path
+          d="M 36 38 L 41.5 26 L 47 38"
+          stroke="url(#ta-g)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.6"
+        />
       </svg>
 
-      {/* Wordmark */}
-      <div className={clsx("font-bold tracking-tight leading-none", s.font)}>
-        <span className={clsx(isLight ? "text-stone-900" : "text-white")}>travel </span>
-        <span className={clsx(isLight ? "text-teal-700" : "text-amber-400")}>around</span>
+      {/* ── Wordmark ──────────────────────────────────────── */}
+      <div className="font-bold tracking-tight leading-none" style={{ fontSize: s.icon * 0.42 }}>
+        <span style={{ color: travelColor }}>travel </span>
+        <span style={{ color: aroundColor }}>around</span>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 
+
 const SLIDES = [
   {
     url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&auto=format&fit=crop&q=80",
@@ -99,19 +100,19 @@ export default function HeroSection() {
         </h1>
 
         {/* Sub */}
-        <p className="text-white/70 text-lg sm:text-xl max-w-xl leading-relaxed mb-10 animate-fade-in">
-          Beantworte ein paar Fragen — unser KI-Berater Finn findet dein
-          perfektes Reiseziel mit persönlichem Plan.
+        <p className="text-white/80 text-lg sm:text-xl max-w-2xl leading-relaxed mb-10 animate-fade-in">
+          Du möchtest gerne ein Gap Year machen, weißt aber noch nicht wohin und wie du es am besten planst?
+          Unsere KI Reise-Beraterin <span className="text-amber-300 font-semibold">Martha</span> hilft dir, das Passende für dich zu finden.
         </p>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 animate-fade-in">
-          <a
-            href="#reiseformate"
-            className="inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-xl font-semibold text-base transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+          <Link
+            href="/advisor"
+            className="inline-flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-4 rounded-xl font-semibold text-base transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
           >
-            Reise entdecken
-          </a>
+            Selbsttest starten
+          </Link>
           <a
             href="#how-it-works"
             className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-base transition-all"

@@ -20,10 +20,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         isAssistant ? "justify-start" : "justify-end"
       )}
     >
-      {/* Avatar for Finn */}
+      {/* Avatar for Martha */}
       {isAssistant && (
         <div className="flex-shrink-0 w-9 h-9 bg-teal-700 rounded-full flex items-center justify-center text-white font-semibold text-sm mt-0.5">
-          F
+          M
         </div>
       )}
 

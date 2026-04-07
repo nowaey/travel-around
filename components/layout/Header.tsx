@@ -23,13 +23,18 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const navLinks = [
+    { href: "/#how-it-works", label: "Wie es funktioniert" },
+    { href: "/advisor", label: "Selbsttest starten" },
+  ];
+
   return (
     <>
       <header
         className={clsx(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           visible ? "translate-y-0" : "-translate-y-full",
-          atTop ? "bg-transparent" : "bg-stone-50/92 backdrop-blur-md border-b border-stone-200/60 shadow-sm"
+          atTop ? "bg-transparent" : "bg-white/95 backdrop-blur-md border-b border-stone-200/60 shadow-sm"
         )}
       >
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
@@ -38,11 +43,8 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden sm:flex items-center gap-7">
-            {[
-              { href: "/#reiseformate", label: "Reiseformate" },
-              { href: "/#how-it-works", label: "Wie es funktioniert" },
-            ].map((item) => (
+          <nav className="hidden sm:flex items-center gap-6">
+            {navLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -54,6 +56,17 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/advisor"
+              className={clsx(
+                "text-sm font-semibold px-4 py-2 rounded-xl transition-all",
+                atTop
+                  ? "bg-white/15 hover:bg-white/25 text-white border border-white/20"
+                  : "bg-cyan-600 hover:bg-cyan-700 text-white"
+              )}
+            >
+              Jetzt starten
+            </Link>
           </nav>
 
           {/* Mobile hamburger */}
@@ -70,10 +83,7 @@ export default function Header() {
       {/* Mobile full-screen menu */}
       {menuOpen && (
         <div className="fixed inset-0 z-50 bg-stone-950/97 backdrop-blur-md flex flex-col items-center justify-center gap-10">
-          <button
-            className="absolute top-5 right-5 p-2"
-            onClick={() => setMenuOpen(false)}
-          >
+          <button className="absolute top-5 right-5 p-2" onClick={() => setMenuOpen(false)}>
             <X className="w-6 h-6 text-white" />
           </button>
 
@@ -81,10 +91,7 @@ export default function Header() {
             <Logo variant="dark" size="lg" />
           </Link>
 
-          {[
-            { href: "/#reiseformate", label: "Reiseformate" },
-            { href: "/#how-it-works", label: "Wie es funktioniert" },
-          ].map((item) => (
+          {navLinks.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -94,6 +101,14 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
+
+          <Link
+            href="/advisor"
+            onClick={() => setMenuOpen(false)}
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-lg px-8 py-3 rounded-2xl transition-colors"
+          >
+            Jetzt starten
+          </Link>
         </div>
       )}
     </>

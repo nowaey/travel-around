@@ -7,95 +7,71 @@ import { FileText, Shield, CalendarCheck, Heart, Backpack, ClipboardList } from 
 
 interface ChecklistSectionProps { items: ChecklistItem[]; }
 
-const CATEGORY_META: Record<string, { label: string; icon: React.ElementType; dot: string; text: string }> = {
-  visa:      { label: "Visum",        icon: FileText,      dot: "bg-blue-400",   text: "text-blue-600" },
-  insurance: { label: "Versicherung", icon: Shield,        dot: "bg-purple-400", text: "text-purple-600" },
-  bookings:  { label: "Buchungen",    icon: CalendarCheck, dot: "bg-amber-400",  text: "text-amber-600" },
-  health:    { label: "Gesundheit",   icon: Heart,         dot: "bg-red-400",    text: "text-red-600" },
-  gear:      { label: "Ausrüstung",   icon: Backpack,      dot: "bg-green-400",  text: "text-green-600" },
-  admin:     { label: "Organisation", icon: ClipboardList, dot: "bg-stone-400",  text: "text-stone-500" },
+const CAT: Record<string, { label: string; Icon: React.ElementType; color: string }> = {
+  visa:      { label: "Visum",        Icon: FileText,      color: "text-blue-500" },
+  insurance: { label: "Versicherung", Icon: Shield,        color: "text-purple-500" },
+  bookings:  { label: "Buchungen",    Icon: CalendarCheck, color: "text-amber-500" },
+  health:    { label: "Gesundheit",   Icon: Heart,         color: "text-rose-500" },
+  gear:      { label: "Ausrüstung",   Icon: Backpack,      color: "text-green-500" },
+  admin:     { label: "Organisation", Icon: ClipboardList, color: "text-stone-400" },
 };
 
-const PRIORITY_DOT: Record<ChecklistItem["priority"], string> = {
-  must: "bg-red-400", recommended: "bg-amber-400", optional: "bg-stone-300",
+const PRIO_DOT: Record<ChecklistItem["priority"], string> = {
+  must: "bg-rose-400", recommended: "bg-amber-400", optional: "bg-stone-300",
 };
-const PRIORITY_LABEL: Record<ChecklistItem["priority"], string> = {
+const PRIO_LABEL: Record<ChecklistItem["priority"], string> = {
   must: "Pflicht", recommended: "Empfohlen", optional: "Optional",
-};
-const PRIORITY_TEXT: Record<ChecklistItem["priority"], string> = {
-  must: "text-red-500", recommended: "text-amber-500", optional: "text-stone-400",
 };
 
 export default function ChecklistSection({ items }: ChecklistSectionProps) {
+  const [activeTab, setActiveTab] = useState("all");
+
   const sorted = [...items].sort(
-    (a, b) =>
-      ({ must: 0, recommended: 1, optional: 2 }[a.priority] ?? 0) -
-      ({ must: 0, recommended: 1, optional: 2 }[b.priority] ?? 0)
+    (a, b) => ({ must: 0, recommended: 1, optional: 2 }[a.priority] ?? 0) - ({ must: 0, recommended: 1, optional: 2 }[b.priority] ?? 0)
   );
-
-  // Collect unique categories in order
-  const presentCategories = Array.from(new Set(sorted.map((i) => i.category)));
-  const [activeTab, setActiveTab] = useState<string>("all");
-
-  const filtered = activeTab === "all" ? sorted : sorted.filter((i) => i.category === activeTab);
+  const categories = Array.from(new Set(sorted.map((i) => i.category)));
+  const visible = activeTab === "all" ? sorted : sorted.filter((i) => i.category === activeTab);
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden shadow-warm border border-stone-100">
+    <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-stone-100">
       {/* Header */}
-      <div className="px-6 pt-5 pb-0">
-        <h3 className="font-bold text-stone-900 text-lg mb-4">Deine Checkliste</h3>
+      <div className="px-5 pt-4 pb-0">
+        <h3 className="font-bold text-stone-800 text-base mb-3">Checkliste</h3>
 
-        {/* Tab bar */}
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0 -mx-1 px-1">
-          <TabButton
-            label="Alle"
-            active={activeTab === "all"}
-            count={sorted.length}
-            onClick={() => setActiveTab("all")}
-          />
-          {presentCategories.map((cat) => {
-            const meta = CATEGORY_META[cat] ?? CATEGORY_META["admin"];
-            return (
-              <TabButton
-                key={cat}
-                label={meta.label}
-                active={activeTab === cat}
-                count={sorted.filter((i) => i.category === cat).length}
-                onClick={() => setActiveTab(cat)}
-              />
-            );
-          })}
+        {/* Tabs */}
+        <div className="flex gap-1 overflow-x-auto scrollbar-none">
+          <Tab label="Alle" count={sorted.length} active={activeTab === "all"} onClick={() => setActiveTab("all")} />
+          {categories.map((cat) => (
+            <Tab
+              key={cat}
+              label={CAT[cat]?.label ?? cat}
+              count={sorted.filter((i) => i.category === cat).length}
+              active={activeTab === cat}
+              onClick={() => setActiveTab(cat)}
+            />
+          ))}
         </div>
-
-        {/* Tab underline */}
         <div className="h-px bg-stone-100 mt-0" />
       </div>
 
       {/* Items */}
-      <div className="divide-y divide-stone-50">
-        {filtered.map((item, idx) => {
-          const meta = CATEGORY_META[item.category] ?? CATEGORY_META["admin"];
-          const Icon = meta.icon;
+      <div className="divide-y divide-stone-50 px-5">
+        {visible.map((item, idx) => {
+          const meta = CAT[item.category] ?? CAT["admin"];
+          const Icon = meta.Icon;
           return (
-            <div key={idx} className="flex gap-3 px-6 py-3.5">
-              <div className="flex-shrink-0 mt-0.5">
-                <span className={clsx("w-2 h-2 rounded-full block mt-1.5", PRIORITY_DOT[item.priority] ?? "bg-stone-300")} />
-              </div>
+            <div key={idx} className="flex items-start gap-3 py-2.5">
+              <span className={clsx("w-2 h-2 rounded-full flex-shrink-0 mt-1.5", PRIO_DOT[item.priority])} />
               <div className="flex-1 min-w-0">
-                <p className="text-stone-700 text-sm leading-relaxed">{item.task}</p>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className={clsx("text-xs font-medium", PRIORITY_TEXT[item.priority] ?? "text-stone-400")}>
-                    {PRIORITY_LABEL[item.priority] ?? item.priority}
-                  </span>
+                <p className="text-stone-700 text-sm leading-snug">{item.task}</p>
+                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                  <span className="text-xs text-stone-400">{PRIO_LABEL[item.priority]}</span>
                   {activeTab === "all" && (
-                    <span className={clsx("flex items-center gap-1 text-xs", meta.text)}>
-                      <Icon className="w-3 h-3" />
-                      {meta.label}
+                    <span className={clsx("flex items-center gap-0.5 text-xs", meta.color)}>
+                      <Icon className="w-3 h-3" />{meta.label}
                     </span>
                   )}
-                  {item.timeframe && (
-                    <span className="text-xs text-stone-400">· {item.timeframe}</span>
-                  )}
+                  {item.timeframe && <span className="text-xs text-stone-300">· {item.timeframe}</span>}
                 </div>
               </div>
             </div>
@@ -104,11 +80,11 @@ export default function ChecklistSection({ items }: ChecklistSectionProps) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 px-6 py-3 border-t border-stone-100 bg-stone-50/50">
+      <div className="flex items-center gap-4 px-5 py-2.5 border-t border-stone-100 bg-stone-50/40">
         {(["must", "recommended", "optional"] as const).map((p) => (
           <div key={p} className="flex items-center gap-1.5 text-xs text-stone-400">
-            <span className={clsx("w-2 h-2 rounded-full", PRIORITY_DOT[p])} />
-            {PRIORITY_LABEL[p]}
+            <span className={clsx("w-2 h-2 rounded-full flex-shrink-0", PRIO_DOT[p])} />
+            {PRIO_LABEL[p]}
           </div>
         ))}
       </div>
@@ -116,35 +92,17 @@ export default function ChecklistSection({ items }: ChecklistSectionProps) {
   );
 }
 
-function TabButton({
-  label,
-  active,
-  count,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  count: number;
-  onClick: () => void;
-}) {
+function Tab({ label, count, active, onClick }: { label: string; count: number; active: boolean; onClick: () => void }) {
   return (
     <button
-      type="button"
       onClick={onClick}
       className={clsx(
-        "flex items-center gap-1.5 px-3 py-2 text-xs font-semibold whitespace-nowrap rounded-t-lg border-b-2 transition-all",
-        active
-          ? "border-teal-600 text-teal-700 bg-teal-50/60"
-          : "border-transparent text-stone-400 hover:text-stone-600"
+        "flex items-center gap-1 px-3 py-2 text-xs font-semibold whitespace-nowrap border-b-2 transition-all",
+        active ? "border-teal-600 text-teal-700" : "border-transparent text-stone-400 hover:text-stone-600"
       )}
     >
       {label}
-      <span
-        className={clsx(
-          "rounded-full px-1.5 py-0.5 text-xs font-bold",
-          active ? "bg-teal-100 text-teal-700" : "bg-stone-100 text-stone-400"
-        )}
-      >
+      <span className={clsx("rounded-full px-1.5 py-0.5 text-xs font-bold", active ? "bg-teal-100 text-teal-700" : "bg-stone-100 text-stone-400")}>
         {count}
       </span>
     </button>

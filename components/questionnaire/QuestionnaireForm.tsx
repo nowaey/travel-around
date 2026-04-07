@@ -245,7 +245,7 @@ export default function QuestionnaireForm({ onSubmit, isLoading }: Questionnaire
               <OptionCard
                 label="Nein — überrasch mich!"
                 icon="🎲"
-                description="Finn sucht das perfekte Ziel für mich aus"
+                description="Martha sucht das passende Gap Year für mich aus"
                 selected={answers.destinationInMind === ""}
                 onClick={() => {
                   update("destinationInMind", "");
@@ -255,7 +255,7 @@ export default function QuestionnaireForm({ onSubmit, isLoading }: Questionnaire
               <OptionCard
                 label="Ja, ich habe ein Ziel im Kopf"
                 icon="📍"
-                description="Ich nenne Finn mein Wunschziel"
+                description="Ich nenne Martha mein Wunschziel"
                 selected={answers.destinationInMind !== ""}
                 onClick={() => {
                   if (answers.destinationInMind === "") {
@@ -477,7 +477,7 @@ export default function QuestionnaireForm({ onSubmit, isLoading }: Questionnaire
           {isLoading ? (
             <>
               <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              Finn denkt nach...
+              Martha denkt nach...
             </>
           ) : isLastStep ? (
             <>
